@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <style>
+            html,
+            body,
+            #root {
+                padding: 0;
+                margin: 0;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+            #editor-container {
+                flex: 1; /* エディタ領域を広げる */
+                min-height: 150px; /* 最小の高さを確保 */
+            }
+        </style>
+    </head>
+    <body>
+        <!-- frame.tsxが直接操作するコンテナ -->
+        <div id="root">
+            <!-- <div id="editor-container"></div> -->
+            <textarea
+                id="html-input"
+                style="
+                    width: 100%;
+                    flex: 1;
+                    font-family: monospace;
+                    font-size: 14px;
+                "
+            ></textarea>
+            <button id="send">送信</button>
+        </div>
+    </body>
+    <script>
+        document.getElementById('send').onclick = () => {
+            console.log("document.getElementById('send').onclick");
+            const layers = document.getElementById('html-input').value.trim();
+            console.log('layers', layers);
+            try {
+                const parsedLayers = JSON.parse(layers);
+                parent.postMessage(
+                    {
+                        pluginMessage: {
+                            type: 'import',
+                            data: {
+                                layers: parsedLayers,
+                            },
+                        },
+                    },
+                    'https://www.figma.com'
+                );
+            } catch (err) {
+                console.log('ssss', err);
+            }
+        };
+    </script>
+</html>
